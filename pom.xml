@@ -1,0 +1,147 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.sourceforge.guacamole</groupId>
+    <artifactId>as-guacamole</artifactId>
+    <packaging>war</packaging>
+    <version>0.0.1</version>
+    <name>${project.artifactId}</name>
+    <url>http://guac-dev.org/</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <!-- Build settings -->
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <!-- Compile using Java 1.6 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+
+            <!-- Overlay guacamole-common-js (zip) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+
+                    <!-- Filter webapp dir --> 
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
+
+                    <overlays>
+                        <overlay>
+                            <groupId>net.sourceforge.guacamole</groupId>
+                            <artifactId>guacamole-common-js</artifactId>
+                            <type>zip</type>
+                        </overlay>
+                    </overlays>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- Dependencies -->
+    <dependencies>
+        <!-- Servlet API -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- SLF4J - logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jcl</artifactId>
+            <version>1.6.1</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Gson: Java to Json conversion -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.2</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Main Guacamole library -->
+        <dependency>
+            <groupId>net.sourceforge.guacamole</groupId>
+            <artifactId>guacamole-common</artifactId>
+            <version>0.8.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Guacamole JavaScript library -->
+        <dependency>
+            <groupId>net.sourceforge.guacamole</groupId>
+            <artifactId>guacamole-common-js</artifactId>
+            <version>0.7.2</version>
+            <type>zip</type>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Apache tomcat websockets API -->
+	    <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>7.0.29</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-coyote</artifactId>
+            <version>7.0.29</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- Repositories -->
+    <repositories>
+        <!-- Main Guacamole repository -->
+        <repository>
+            <id>guac-dev</id>
+            <url>http://guac-dev.org/repo</url>
+        </repository>
+
+        <!-- Central maven repository -->
+        <repository>
+            <id>central</id>
+            <name>Maven Central Repository</name>
+            <url>http://repo1.maven.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+</project>
