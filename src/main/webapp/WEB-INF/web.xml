@@ -16,10 +16,10 @@
 
     <!-- Guacamole Tunnel Servlet -->
     <servlet>
-        <description>ausync-guac tunnel servlet.</description>
+        <description>Australian Synchrotron guacamole tunnel servlet</description>
         <servlet-name>ausyncguacTunnel</servlet-name>
         <servlet-class>
-            net.sourceforge.guacamole.net.ausyncguac.IrVisGuacamoleTunnelServlet
+            net.sourceforge.guacamole.net.ausyncguac.AusyncGuacamoleTunnelServlet
         </servlet-class>
     </servlet>
 
