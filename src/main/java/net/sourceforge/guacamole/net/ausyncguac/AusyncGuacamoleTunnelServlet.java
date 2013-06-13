@@ -1,4 +1,4 @@
-package net.sourceforge.guacamole.net.ausync;
+package net.sourceforge.guacamole.net.ausyncguac;
 
 import java.io.*;
 import java.util.Arrays;
