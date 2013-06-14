@@ -28,4 +28,18 @@
         <url-pattern>/tunnel</url-pattern>
     </servlet-mapping>
 
+    <!-- Credentials Servlet -->
+    <servlet>
+        <description>Australian Synchrotron credentials servlet</description>
+        <servlet-name>credentialsServlet</servlet-name>
+        <servlet-class>
+            net.sourceforge.guacamole.net.ausyncguac.AusyncCredentialsServlet
+        </servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>credentialsServlet</servlet-name>
+        <url-pattern>/credentials</url-pattern>
+    </servlet-mapping>
+
 </web-app>

@@ -19,6 +19,8 @@ import java.lang.ProcessBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.guacamole.net.ausyncguac.AusyncCredentials;
+
 /**
  * The remote visualisation session servlet. It is based on Guacamole.
  */
@@ -31,15 +33,20 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
 
 
         //--------------------------------
-        //    Read the settings file
-        //--------------------------------
-        //TODO
-
-
-        //--------------------------------
         //   Perform the authentication
         //--------------------------------
-        //TODO
+        //Get the credentials from the HTTP session
+        AusyncCredentials credentials = (AusyncCredentials)request.getSession(true).getAttribute("credentials");
+        if (credentials == null) {
+            logger.error("Couldn't find credentials in the HTTP session!");
+            return null;
+        }
+
+        //Validate the credentials
+        if (!credentials.isValid(request)) {
+            logger.error("The credentials are not valid!");
+            return null;   
+        }
 
 
         //--------------------------------
@@ -49,7 +56,7 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         config.setProtocol("vnc");
         config.setParameter("hostname", "localhost");
         config.setParameter("port", "5901");
-        config.setParameter("password", "");
+        config.setParameter("password", credentials.password);
 
         // Get client information
         GuacamoleClientInformation info = new GuacamoleClientInformation();
