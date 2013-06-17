@@ -35,7 +35,8 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
             //Use ProcessBuilder to allow for arguments with spaces (such as file paths)
             List<String> command = new ArrayList<String>();
             command.add("/usr/bin/sudo");
-            command.add("-u "+username);
+            command.add("-u");
+            command.add(username);
             command.add("/usr/bin/vncserver");
             for (String s : args) {
                 command.add(s);
@@ -90,7 +91,7 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         if (tmp_height != null) height = tmp_height;
         if (getServletContext().getInitParameter("autoResolutionVNC").equals("True")) {
             callVNCServer(new String[] {"-kill", ":1"}, credentials.getUsername());
-            callVNCServer(new String[] {"-geometry "+width+"x"+height, "-dpi 96", ":1"}, credentials.getUsername());    
+            callVNCServer(new String[] {"-geometry", width+"x"+height, "-dpi", "96", ":1"}, credentials.getUsername());    
         }
         
 
