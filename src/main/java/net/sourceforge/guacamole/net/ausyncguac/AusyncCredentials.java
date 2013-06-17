@@ -7,18 +7,24 @@ import javax.servlet.http.*;
 
 
 /**
- * The user credentials as they were set via the credentials servlet.
- * Provides a method to verify the credentials.
+ * The user credentials. They are read from the servelt context.
+ * The class provides a method to verify the credentials.
  */
 public class AusyncCredentials implements java.io.Serializable {
-    public String userID       = "";
-    public String username     = "";
-    public String password     = "";
-    public String clientIP     = "";
-    public String vblSessionID = "";
+    private String userID       = "";
+    private String username     = "";
+    private String password     = "";
+    private String clientIP     = "";
+    private String vblSessionID = "";
 
 
-    AusyncCredentials() {
+    AusyncCredentials(ServletContext context) {
+        //Load the credentials from the servlet context
+        userID = context.getInitParameter("userID ");
+        username = context.getInitParameter("username ");
+        password = context.getInitParameter("password ");
+        clientIP = context.getInitParameter("clientIP ");
+        vblSessionID = context.getInitParameter("vblSessionID ");
     }
 
 
@@ -35,5 +41,9 @@ public class AusyncCredentials implements java.io.Serializable {
         //TODO: Implementation
 
         return true;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

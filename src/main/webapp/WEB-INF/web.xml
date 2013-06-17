@@ -22,24 +22,31 @@
             net.sourceforge.guacamole.net.ausyncguac.AusyncGuacamoleTunnelServlet
         </servlet-class>
     </servlet>
-
     <servlet-mapping>
         <servlet-name>ausyncguacTunnel</servlet-name>
         <url-pattern>/tunnel</url-pattern>
     </servlet-mapping>
 
-    <!-- Credentials Servlet -->
-    <servlet>
-        <description>Australian Synchrotron credentials servlet</description>
-        <servlet-name>credentialsServlet</servlet-name>
-        <servlet-class>
-            net.sourceforge.guacamole.net.ausyncguac.AusyncCredentialsServlet
-        </servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>credentialsServlet</servlet-name>
-        <url-pattern>/credentials</url-pattern>
-    </servlet-mapping>
+    <!-- common servlet parameters -->
+    <context-param>
+         <param-name>userID</param-name>
+         <param-value>::userID::</param-value>
+    </context-param>
+    <context-param>
+         <param-name>username</param-name>
+         <param-value>::username::</param-value>
+    </context-param>
+    <context-param>
+         <param-name>password</param-name>
+         <param-value>::password::</param-value>
+    </context-param>
+    <context-param>
+         <param-name>clientIP</param-name>
+         <param-value>::clientIP::</param-value>
+    </context-param>
+    <context-param>
+         <param-name>vblSessionID</param-name>
+         <param-value>::vblSessionID::</param-value>
+    </context-param>
 
 </web-app>

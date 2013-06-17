@@ -35,12 +35,8 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         //--------------------------------
         //   Perform the authentication
         //--------------------------------
-        //Get the credentials from the HTTP session
-        AusyncCredentials credentials = (AusyncCredentials)request.getSession(true).getAttribute("credentials");
-        if (credentials == null) {
-            logger.error("Couldn't find credentials in the HTTP session!");
-            return null;
-        }
+        //Get the credentials from the servlet context
+        AusyncCredentials credentials = new AusyncCredentials(getServletContext());
 
         //Validate the credentials
         if (!credentials.isValid(request)) {
@@ -56,7 +52,7 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         config.setProtocol("vnc");
         config.setParameter("hostname", "localhost");
         config.setParameter("port", "5901");
-        config.setParameter("password", credentials.password);
+        config.setParameter("password", credentials.getPassword());
 
         // Get client information
         GuacamoleClientInformation info = new GuacamoleClientInformation();
