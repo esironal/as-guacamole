@@ -34,8 +34,8 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         try {
             //Use ProcessBuilder to allow for arguments with spaces (such as file paths)
             List<String> command = new ArrayList<String>();
-            command.add("sudo");
-            command.add("vncserver");
+            command.add("sudo -u "+username);
+            command.add("/usr/bin/vncserver");
             for (String s : args) {
                 command.add(s);
             }
