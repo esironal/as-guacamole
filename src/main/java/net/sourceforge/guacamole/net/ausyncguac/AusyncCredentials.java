@@ -51,4 +51,8 @@ public class AusyncCredentials implements java.io.Serializable {
     public String getPassword() {
         return password;
     }
+
+    public String getUsername() {
+        return username;
+    }
 }

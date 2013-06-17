@@ -14,6 +14,8 @@ import net.sourceforge.guacamole.protocol.GuacamoleClientInformation;
 import net.sourceforge.guacamole.protocol.GuacamoleConfiguration;
 import net.sourceforge.guacamole.servlet.GuacamoleHTTPTunnelServlet;
 import net.sourceforge.guacamole.servlet.GuacamoleSession;
+import java.util.List;
+import java.util.ArrayList;
 import java.lang.Process;
 import java.lang.ProcessBuilder;
 import org.slf4j.Logger;
@@ -28,9 +30,38 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
 
     Logger logger = LoggerFactory.getLogger(AusyncGuacamoleTunnelServlet.class);
 
+    private void callVNCServer(String[] args) {
+        try {
+            //Use ProcessBuilder to allow for arguments with spaces (such as file paths)
+            List<String> command = new ArrayList<String>();
+            command.add("vncserver");
+            for (String s : args) {
+                command.add(s);
+            }
+
+            ProcessBuilder procBuilder = new ProcessBuilder(command);
+            procBuilder.environment().put("HOME", "/home/tomcat");
+            Process proc = procBuilder.start();
+
+            //Read the error output
+            String line = "";
+            String errorOutput = "";
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+            while ((line = stdError.readLine()) != null) {
+                errorOutput += line + "\n";
+            }
+
+            if (!errorOutput.isEmpty()) {
+                logger.error("VNCServer command execution error: \n{}", errorOutput);
+            }
+        } catch (IOException e) {
+            logger.error(e.toString());
+        }
+    }
+
+
     @Override
     protected GuacamoleTunnel doConnect(HttpServletRequest request) throws GuacamoleException {
-
 
         //--------------------------------
         //   Perform the authentication
@@ -46,6 +77,20 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
 
 
         //--------------------------------
+        //   Restart the VNC server to
+        //   set the screen resolution
+        //--------------------------------
+        String width = "1024";
+        String height = "768";
+        String tmp_width = request.getParameter("width");
+        String tmp_height = request.getParameter("height");
+        if (tmp_width != null) width = tmp_width;
+        if (tmp_height != null) height = tmp_height;
+        callVNCServer(new String[] {"-kill", ":1"});
+        callVNCServer(new String[] {"-geometry "+width+"x"+height, "-dpi 96", ":1"});
+
+
+        //--------------------------------
         //   Connect to the VNC server
         //--------------------------------
         GuacamoleConfiguration config = new GuacamoleConfiguration();
@@ -57,15 +102,9 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         // Get client information
         GuacamoleClientInformation info = new GuacamoleClientInformation();
         
-        // Set width if provided
-        String width  = request.getParameter("width");
-        if (width != null)
-            info.setOptimalScreenWidth(Integer.parseInt(width));
-
-        // Set height if provided
-        String height = request.getParameter("height");
-        if (height != null)
-            info.setOptimalScreenHeight(Integer.parseInt(height));
+        // Set screen resolution for the JavaScript
+        info.setOptimalScreenWidth(Integer.parseInt(width));
+        info.setOptimalScreenHeight(Integer.parseInt(height));
            
         // Add video mimetypes
         String[] video_mimetypes = request.getParameterValues("video");
