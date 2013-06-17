@@ -30,17 +30,18 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
 
     Logger logger = LoggerFactory.getLogger(AusyncGuacamoleTunnelServlet.class);
 
-    private void callVNCServer(String[] args) {
+    private void callVNCServer(String[] args, String username) {
         try {
             //Use ProcessBuilder to allow for arguments with spaces (such as file paths)
             List<String> command = new ArrayList<String>();
+            command.add("sudo");
             command.add("vncserver");
             for (String s : args) {
                 command.add(s);
             }
 
             ProcessBuilder procBuilder = new ProcessBuilder(command);
-            procBuilder.environment().put("HOME", "/home/tomcat");
+            procBuilder.environment().put("HOME", "/home/"+username);
             Process proc = procBuilder.start();
 
             //Read the error output
@@ -87,8 +88,8 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         if (tmp_width != null) width = tmp_width;
         if (tmp_height != null) height = tmp_height;
         if (getServletContext().getInitParameter("autoResolutionVNC") == "1") {
-            callVNCServer(new String[] {"-kill", ":1"});
-            callVNCServer(new String[] {"-geometry "+width+"x"+height, "-dpi 96", ":1"});    
+            callVNCServer(new String[] {"-kill", ":1"}, credentials.getUsername());
+            callVNCServer(new String[] {"-geometry "+width+"x"+height, "-dpi 96", ":1"}, credentials.getUsername());    
         }
         
 

@@ -50,7 +50,7 @@
     </context-param>
     <context-param>
          <param-name>autoResolutionVNC</param-name>
-         <param-value>0</param-value>
+         <param-value>1</param-value>
     </context-param>
 
 </web-app>
