@@ -48,5 +48,9 @@
          <param-name>vblSessionID</param-name>
          <param-value>::vblSessionID::</param-value>
     </context-param>
+    <context-param>
+         <param-name>autoResolutionVNC</param-name>
+         <param-value>0</param-value>
+    </context-param>
 
 </web-app>

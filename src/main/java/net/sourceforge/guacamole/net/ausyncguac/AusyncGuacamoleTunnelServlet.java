@@ -86,9 +86,11 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         String tmp_height = request.getParameter("height");
         if (tmp_width != null) width = tmp_width;
         if (tmp_height != null) height = tmp_height;
-        callVNCServer(new String[] {"-kill", ":1"});
-        callVNCServer(new String[] {"-geometry "+width+"x"+height, "-dpi 96", ":1"});
-
+        if (getServletContext().getInitParameter("autoResolutionVNC") == "1") {
+            callVNCServer(new String[] {"-kill", ":1"});
+            callVNCServer(new String[] {"-geometry "+width+"x"+height, "-dpi 96", ":1"});    
+        }
+        
 
         //--------------------------------
         //   Connect to the VNC server
