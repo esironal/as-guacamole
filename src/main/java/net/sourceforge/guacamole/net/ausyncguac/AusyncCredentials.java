@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -11,6 +13,9 @@ import javax.servlet.http.*;
  * The class provides a method to verify the credentials.
  */
 public class AusyncCredentials implements java.io.Serializable {
+
+    Logger logger = LoggerFactory.getLogger(AusyncCredentials.class);
+
     private String userID       = "";
     private String username     = "";
     private String password     = "";
@@ -20,11 +25,11 @@ public class AusyncCredentials implements java.io.Serializable {
 
     AusyncCredentials(ServletContext context) {
         //Load the credentials from the servlet context
-        userID = context.getInitParameter("userID ");
-        username = context.getInitParameter("username ");
-        password = context.getInitParameter("password ");
-        clientIP = context.getInitParameter("clientIP ");
-        vblSessionID = context.getInitParameter("vblSessionID ");
+        userID = context.getInitParameter("userID");
+        username = context.getInitParameter("username");
+        password = context.getInitParameter("password");
+        clientIP = context.getInitParameter("clientIP");
+        vblSessionID = context.getInitParameter("vblSessionID");
     }
 
 
