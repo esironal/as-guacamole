@@ -56,5 +56,9 @@
          <param-name>onConnectCommand</param-name>
          <param-value>::onConnectCommand::</param-value>
     </context-param>
+    <context-param>
+         <param-name>onDisconnectCommand</param-name>
+         <param-value>::onDisconnectCommand::</param-value>
+    </context-param>
 
 </web-app>

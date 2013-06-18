@@ -16,6 +16,7 @@ import net.sourceforge.guacamole.servlet.GuacamoleHTTPTunnelServlet;
 import net.sourceforge.guacamole.servlet.GuacamoleSession;
 import java.util.List;
 import java.util.ArrayList;
+import java.lang.Thread;
 import java.lang.Process;
 import java.lang.ProcessBuilder;
 import org.slf4j.Logger;
@@ -30,6 +31,39 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
 
     Logger logger = LoggerFactory.getLogger(AusyncGuacamoleTunnelServlet.class);
     private Boolean firstConnect = true;
+
+    private class TunnelThread extends Thread {
+        private GuacamoleTunnel tunnelRef = null;
+        private String disconnCommand = null;
+
+        public TunnelThread(GuacamoleTunnel tunnel, String command) {
+            tunnelRef = tunnel;
+            disconnCommand = command;
+        }
+
+        public void run() {
+            try {
+                // Run as long as tunnel is open
+                while (tunnelRef.isOpen()) {
+                    // Pause for 30 seconds
+                    Thread.sleep(30000);
+                }
+
+                // If the tunnel was closed, call the onDisconnectCommand
+                if(disconnCommand != null && !disconnCommand.isEmpty()) {
+                    try {
+                        ProcessBuilder pb = new ProcessBuilder(disconnCommand);
+                        pb.start();
+                    } catch (IOException e) {
+                        logger.error(e.toString());
+                    }
+                }
+            } catch (InterruptedException e) {
+                logger.error(e.toString());
+            }
+        }
+    }
+
 
     private void callVNCServer(String[] args, String username) {
         try {
@@ -144,7 +178,9 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
                 logger.error(e.toString());
             }
         }
-        
+
+        // Start the thread that checks if the tunnel is still open
+        new TunnelThread(tunnel, getServletContext().getInitParameter("onDisconnectCommand")).start();
 
         // Logging
         logger.info("HTTP tunnel established");
