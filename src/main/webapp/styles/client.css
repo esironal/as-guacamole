@@ -153,6 +153,7 @@ div#display * {
 div#display > * {
     margin-left: auto;
     margin-right: auto;
+    cursor: url('../images/mouse/dot.gif'),url('../images/mouse/blank.cur'),default;
 }
 
 div.magnifier-background {
