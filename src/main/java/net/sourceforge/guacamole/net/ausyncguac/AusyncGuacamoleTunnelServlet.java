@@ -29,6 +29,7 @@ import net.sourceforge.guacamole.net.ausyncguac.AusyncCredentials;
 public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
 
     Logger logger = LoggerFactory.getLogger(AusyncGuacamoleTunnelServlet.class);
+    private Boolean firstConnect = true;
 
     private void callVNCServer(String[] args, String username) {
         try {
@@ -89,7 +90,7 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         String tmp_height = request.getParameter("height");
         if (tmp_width != null) width = tmp_width;
         if (tmp_height != null) height = tmp_height;
-        if (getServletContext().getInitParameter("autoResolutionVNC").equals("True")) {
+        if (getServletContext().getInitParameter("autoResolutionVNC").equals("True") && firstConnect) {
             callVNCServer(new String[] {"-kill", ":1"}, credentials.getUsername());
             callVNCServer(new String[] {"-geometry", width+"x"+height, "-dpi", "96", ":1"}, credentials.getUsername());    
         }
@@ -130,6 +131,7 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         session.attachTunnel(tunnel);
 
         logger.info("HTTP tunnel established");
+        firstConnect = false;
 
         // Return pre-attached tunnel
         return tunnel;
