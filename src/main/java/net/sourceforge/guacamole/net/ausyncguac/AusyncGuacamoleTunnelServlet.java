@@ -136,7 +136,7 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         //---------------------------------
         // If not empty, call the onConnect command line
         String onConnectCommand = getServletContext().getInitParameter("onConnectCommand");
-        if(onConnectCommand != null && onConnectCommand.length() == 0) {
+        if(onConnectCommand != null && !onConnectCommand.isEmpty()) {
             try {
                 ProcessBuilder pb = new ProcessBuilder(onConnectCommand);
                 pb.start();
