@@ -130,6 +130,23 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         GuacamoleSession session = new GuacamoleSession(request.getSession(true));
         session.attachTunnel(tunnel);
 
+
+        //---------------------------------
+        // Connection has been established
+        //---------------------------------
+        // If not empty, call the onConnect command line
+        String onConnectCommand = getServletContext().getInitParameter("onConnectCommand");
+        if(onConnectCommand != null && onConnectCommand.length() == 0) {
+            try {
+                ProcessBuilder pb = new ProcessBuilder(onConnectCommand);
+                pb.start();
+            } catch (IOException e) {
+                logger.error(e.toString());
+            }
+        }
+        
+
+        // Logging
         logger.info("HTTP tunnel established");
         firstConnect = false;
 
