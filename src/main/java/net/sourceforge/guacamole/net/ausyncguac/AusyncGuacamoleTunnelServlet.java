@@ -43,6 +43,12 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
 
         public void run() {
             try {
+                // Wait for the tunnel to be open for the first time
+                while (!tunnelRef.isOpen()) {
+                    // Pause for 10 seconds
+                    Thread.sleep(10000);
+                }
+
                 // Run as long as tunnel is open
                 while (tunnelRef.isOpen()) {
                     // Pause for 30 seconds
