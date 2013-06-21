@@ -194,10 +194,12 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         }
 
         // Start the thread that checks if the tunnel is still open
-        new TunnelThread(tunnel,
-                         getServletContext().getInitParameter("onDisconnectCommand"),
-                         getServletContext().getInitParameter("onConnectCommand")
-                         ).start();
+        if (tunnel != null) {
+            new TunnelThread(tunnel,
+                             getServletContext().getInitParameter("onDisconnectCommand"),
+                             getServletContext().getInitParameter("onConnectCommand")
+                             ).start();    
+        }
 
         // Logging
         logger.info("HTTP tunnel established");
