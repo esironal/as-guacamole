@@ -35,10 +35,23 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
     private class TunnelThread extends Thread {
         private GuacamoleTunnel tunnelRef = null;
         private String disconnCommand = null;
+        private String connectCommand = null;
 
-        public TunnelThread(GuacamoleTunnel tunnel, String command) {
+        public TunnelThread(GuacamoleTunnel tunnel, String discCommand, String conCommand) {
             tunnelRef = tunnel;
-            disconnCommand = command;
+            disconnCommand = discCommand;
+            connectCommand = conCommand;
+        }
+
+        private void executeCommand(String command) {
+            if(command != null && !command.isEmpty()) {
+                try {
+                    ProcessBuilder pb = new ProcessBuilder(command);
+                    pb.start();
+                } catch (IOException e) {
+                    logger.error(e.toString());
+                }
+            }
         }
 
         public void run() {
@@ -51,19 +64,14 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
 
                 // Run as long as tunnel is open
                 while (tunnelRef.isOpen()) {
-                    // Pause for 30 seconds
-                    Thread.sleep(30000);
+                    // Pause for 1 min
+                    Thread.sleep(60000);
+                    //Make sure there is no timer running
+                    executeCommand(connectCommand);
                 }
 
                 // If the tunnel was closed, call the onDisconnectCommand
-                if(disconnCommand != null && !disconnCommand.isEmpty()) {
-                    try {
-                        ProcessBuilder pb = new ProcessBuilder(disconnCommand);
-                        pb.start();
-                    } catch (IOException e) {
-                        logger.error(e.toString());
-                    }
-                }
+                executeCommand(disconnCommand);
             } catch (InterruptedException e) {
                 logger.error(e.toString());
             }
@@ -186,7 +194,10 @@ public class AusyncGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
         }
 
         // Start the thread that checks if the tunnel is still open
-        new TunnelThread(tunnel, getServletContext().getInitParameter("onDisconnectCommand")).start();
+        new TunnelThread(tunnel,
+                         getServletContext().getInitParameter("onDisconnectCommand"),
+                         getServletContext().getInitParameter("onConnectCommand")
+                         ).start();
 
         // Logging
         logger.info("HTTP tunnel established");
